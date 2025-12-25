@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Book Exchange</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+<body>
+  <nav class="navbar navbar-dark bg-danger">
+    <div class="container">
+      <a class="navbar-brand">⚙️ Admin Dashboard</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+    <h3>All Books</h3>
+    <div class="row">
+      {% for book in books %}
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          {% if book.image_url %}
+          <img src="{{ book.image_url }}" class="card-img-top" alt="{{ book.title }}">
+          {% else %}
+          <img src="https://via.placeholder.com/200" class="card-img-top" alt="No image">
+          {% endif %}
+          <div class="card-body">
+            <h5>{{ book.title }}</h5>
+            <p class="text-muted">{{ book.author }}</p>
+            <p class="text-muted">Owner ID: {{ book.owner_id }}</p>
+            <form method="POST" action="{{ url_for('delete_book', book_id=book._id) }}">
+              <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+            <a href="{{ url_for('chat', book_id=book._id, other_user_id=book.owner_id) }}" class="btn btn-info btn-sm mt-2">
+              View Chat
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h3 class="mt-5">All Messages</h3>
+    <div class="list-group">
+      {% for msg in messages %}
+      <div class="list-group-item">
+        <p><strong>Book ID:</strong> {{ msg.book_id }}</p>
+        <p><strong>From:</strong> {{ msg.from_user }} | <strong>To:</strong> {{ msg.to_user }}</p>
+        <p><strong>Message:</strong> {{ msg.message }}</p>
+        <p><small>{{ msg.timestamp }}</small></p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>
