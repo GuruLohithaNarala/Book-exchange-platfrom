@@ -7,7 +7,7 @@ WTForms==3.1.2
 Flask-SQLAlchemy==3.1.1
 SQLAlchemy==2.0.23
 
-Pillow==10.3.0
+Pillow==10.2.0
 email-validator==2.1.1
 
 gunicorn==21.2.0
