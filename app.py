@@ -4,23 +4,23 @@ from bson.objectid import ObjectId
 import os
 from datetime import datetime
 
+# ===============================
+# APP CONFIG
+# ===============================
 app = Flask(__name__)
-
-# ===============================
-# SECRET KEY (use env in prod)
-# ===============================
 app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
 
 # ===============================
-# MONGODB CONNECTION (Atlas)
+# MONGODB CONFIG (ATLAS)
 # ===============================
 MONGO_URI = os.environ.get("MONGO_URI")
-
 if not MONGO_URI:
     raise RuntimeError("MONGO_URI environment variable is not set")
 
 client = MongoClient(
     MONGO_URI,
+    tls=True,
+    tlsAllowInvalidCertificates=True,
     serverSelectionTimeoutMS=5000
 )
 
@@ -37,7 +37,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 # ===============================
-# UNREAD MESSAGE COUNT
+# CONTEXT PROCESSOR
 # ===============================
 @app.context_processor
 def utility_processor():
@@ -75,11 +75,11 @@ def register():
         role = request.form["role"]
 
         if users_collection.find_one({"username": username}):
-            return "User already exists!"
+            return "User already exists"
 
         users_collection.insert_one({
             "username": username,
-            "password": password,  # ⚠️ hash in production
+            "password": password,  # ⚠️ Hash in production
             "role": role
         })
         return redirect(url_for("login"))
@@ -268,7 +268,7 @@ def logout():
     return redirect(url_for("index"))
 
 # ===============================
-# RUN LOCAL
+# LOCAL RUN ONLY
 # ===============================
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
