@@ -8,7 +8,9 @@ app = Flask(__name__)
 app.secret_key = "your_secret_key"
 
 # MongoDB connection
-client = MongoClient("mongodb://localhost:27017/bookexchange")
+MONGO_URI = os.environ.get("mongodb+srv://naralagurulohitha:Lohi@janu08@cluster0.3ca3sjd.mongodb.net/")
+
+client = MongoClient(MONGO_URI)
 db = client['book_exchange_db']
 users_collection = db['users']
 books_collection = db['books']
